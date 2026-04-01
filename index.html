@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Manoj Kumar S — Video Editor & Storyteller based in Chennai, Tamil Nadu. Short-form specialist crafting cinematic YouTube Shorts, Instagram Reels, and fan edits.">
+<meta name="keywords" content="video editor, YouTube Shorts, Instagram Reels, Chennai, short-form video, cinematic edits">
+<meta property="og:title" content="Manoj Kumar S — Video Editor">
+<meta property="og:description" content="Turning raw footage into powerful short-form stories that captivate and retain audiences.">
+<meta property="og:type" content="website">
+<title>MANOJ KUMAR S — Video Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ── TOKENS ── */
+  :root {
+    --black:     #050505;
+    --charcoal:  #0d0d0d;
+    --deep:      #111111;
+    --surface:   #181818;
+    --border:    #252525;
+    --gold:      #c9a84c;
+    --gold-dim:  #7a6230;
+    --gold-glow: rgba(201,168,76,.16);
+    --cream:     #f0ead6;
+    --muted:     #707070;
+    --white:     #f4f4ef;
+    --film:      'Bebas Neue', sans-serif;
+    --serif:     'Cormorant Garamond', serif;
+    --mono:      'Space Mono', monospace;
+  }
+
+  /* ── RESET ── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--serif);
+    cursor: none;
+    overflow-x: hidden;
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  #cur {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    mix-blend-mode: exclusion;
+    transition: width .25s, height .25s;
+  }
+  #crng {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,168,76,.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99998;
+    transform: translate(-50%, -50%);
+    transition: left .08s linear, top .08s linear;
+  }
+  body:has(a:hover) #cur,
+  body:has(button:hover) #cur { width: 18px; height: 18px; }
+
+  /* ── GRAIN OVERLAY ── */
+  .grain {
+    position: fixed; inset: 0;
+    z-index: 9997;
+    pointer-events: none;
+    opacity: .042;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px;
+    animation: grainShift .35s steps(1) infinite;
+  }
+  @keyframes grainShift {
+    0%   { background-position: 0 0; }
+    25%  { background-position: -55px -90px; }
+    50%  { background-position: -90px 55px; }
+    75%  { background-position: 55px -55px; }
+  }
+
+  /* ── LOADER ── */
+  #loader {
+    position: fixed; inset: 0;
+    z-index: 9999;
+    background: var(--black);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    transition: opacity .9s, visibility .9s;
+  }
+  #loader.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+  .l-perf-row { display: flex; gap: 3px; margin-bottom: 2.4rem; }
+  .l-perf {
+    width: 8px; height: 8px;
+    border: 1px solid var(--gold-dim);
+    animation: perfBlink 1.2s ease-in-out infinite;
+  }
+  .l-perf:nth-child(odd)  { animation-delay: .18s; }
+  .l-perf:nth-child(even) { animation-delay: .36s; }
+  @keyframes perfBlink {
+    0%, 100% { background: transparent; border-color: var(--gold-dim); }
+    50%       { background: var(--gold); border-color: var(--gold); }
+  }
+  .l-frame {
+    border: 1px solid var(--gold-dim);
+    padding: 2.8rem 5rem;
+    position: relative;
+    text-align: center;
+  }
+  .l-frame::before {
+    content: '';
+    position: absolute; top: -1px; left: -1px;
+    width: 22px; height: 22px;
+    border-top: 2px solid var(--gold);
+    border-left: 2px solid var(--gold);
+  }
+  .l-frame::after {
+    content: '';
+    position: absolute; bottom: -1px; right: -1px;
+    width: 22px; height: 22px;
+    border-bottom: 2px solid var(--gold);
+    border-right: 2px solid var(--gold);
+  }
+  .l-name {
+    font-family: var(--film);
+    font-size: clamp(2rem, 5vw, 4rem);
+    letter-spacing: .28em;
+    color: var(--white);
+  }
+  .l-sub {
+    font-family: var(--mono);
+    font-size: .58rem;
+    letter-spacing: .44em;
+    color: var(--gold);
+    margin-top: .6rem;
+  }
+  .l-bar-w {
+    width: 220px; height: 1px;
+    background: var(--border);
+    margin-top: 2.5rem;
+    overflow: hidden;
+  }
+  .l-bar {
+    height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+    animation: loadBar 2.3s ease forwards;
+  }
+  @keyframes loadBar { to { width: 100%; } }
+  .l-ct {
+    font-family: var(--mono);
+    font-size: .62rem;
+    color: var(--muted);
+    margin-top: .5rem;
+    letter-spacing: .24em;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 1.3rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background .4s, backdrop-filter .4s;
+  }
+  nav.ink {
+    background: rgba(5,5,5,.93);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--film);
+    font-size: 1.55rem;
+    letter-spacing: .16em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: .6rem;
+    letter-spacing: .22em;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color .3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width .3s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    font-family: var(--mono);
+    font-size: .6rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    border: none;
+    padding: .58rem 1.4rem;
+    cursor: none;
+    transition: background .3s, box-shadow .3s;
+  }
+  .nav-cta:hover { background: var(--cream); box-shadow: 0 0 24px rgba(201,168,76,.3); }
+  .hbg { display: none; flex-direction: column; gap: 5px; cursor: none; }
+  .hbg span { width: 22px; height: 1px; background: var(--white); }
+
+  /* ── HERO ── */
+  #hero {
+    height: 100vh;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .h-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 25% 60%, rgba(35,22,5,1) 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 35%, rgba(50,12,5,.55) 0%, transparent 50%),
+      linear-gradient(160deg, #0c0905 0%, #050505 100%);
+  }
+  .h-glow {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 50%, rgba(201,168,76,.06) 0%, transparent 65%);
+    animation: glowPulse 4s ease-in-out infinite alternate;
+  }
+  @keyframes glowPulse {
+    from { opacity: .5; transform: scale(1); }
+    to   { opacity: 1;  transform: scale(1.05); }
+  }
+  .scanlines {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 3px,
+      rgba(0,0,0,.07) 3px, rgba(0,0,0,.07) 4px
+    );
+  }
+  .h-bar-t, .h-bar-b {
+    position: absolute; left: 0; right: 0;
+    z-index: 3;
+    background: var(--black);
+  }
+  .h-bar-t { top: 0; height: 55px; }
+  .h-bar-b { bottom: 0; height: 55px; }
+  .h-cnt {
+    position: relative;
+    z-index: 4;
+    text-align: center;
+    padding: 0 2rem;
+  }
+  .h-eye {
+    font-family: var(--mono);
+    font-size: .6rem;
+    letter-spacing: .5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.4rem;
+    opacity: 0;
+    animation: fadeUp .8s ease .4s forwards;
+  }
+  .h-nm {
+    font-family: var(--film);
+    font-size: clamp(3.5rem, 11vw, 10.5rem);
+    letter-spacing: .07em;
+    line-height: .88;
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp .9s ease .6s forwards;
+  }
+  .h-nm .g { color: var(--gold); }
+  .h-rule {
+    width: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 1.6rem auto;
+    opacity: 0;
+    animation: expandLine .8s ease 1s forwards;
+  }
+  @keyframes expandLine { to { width: 80px; opacity: 1; } }
+  .h-ttl {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(1rem, 2.2vw, 1.5rem);
+    color: var(--cream);
+    letter-spacing: .18em;
+    opacity: 0;
+    animation: fadeUp .9s ease .8s forwards;
+  }
+  .h-tag {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(.85rem, 1.6vw, 1rem);
+    color: var(--muted);
+    letter-spacing: .04em;
+    margin-top: .8rem;
+    max-width: 480px;
+    margin-left: auto; margin-right: auto;
+    opacity: 0;
+    animation: fadeUp .9s ease 1s forwards;
+  }
+  .h-btns {
+    display: flex; gap: 1.2rem; justify-content: center;
+    margin-top: 2.4rem;
+    opacity: 0;
+    animation: fadeUp .9s ease 1.2s forwards;
+  }
+  .btn-g {
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    border: none;
+    padding: .85rem 2rem;
+    cursor: none;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: .7rem;
+    transition: background .3s, box-shadow .3s;
+  }
+  .btn-g:hover { background: var(--cream); box-shadow: 0 0 32px rgba(201,168,76,.35); }
+  .btn-o {
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: .85rem 2rem;
+    cursor: none;
+    text-decoration: none;
+    transition: border-color .3s, color .3s;
+  }
+  .btn-o:hover { border-color: var(--gold); color: var(--gold); }
+  .tri {
+    width: 0; height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 10px solid var(--black);
+    display: inline-block;
+  }
+  .h-scroll {
+    position: absolute; bottom: 65px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 2s forwards;
+  }
+  .h-stxt {
+    font-family: var(--mono);
+    font-size: .5rem;
+    letter-spacing: .3em;
+    color: var(--border);
+    text-transform: uppercase;
+  }
+  .h-sline {
+    width: 1px; height: 36px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollBob 2s ease-in-out infinite;
+  }
+  @keyframes scrollBob {
+    0%, 100% { transform: scaleY(1); opacity: 1; }
+    50%       { transform: scaleY(.5); opacity: .3; }
+  }
+  .h-stats {
+    position: absolute; bottom: 60px; right: 3rem;
+    z-index: 5;
+    display: flex; flex-direction: column; gap: 1.2rem;
+    text-align: right;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.8s forwards;
+  }
+  .s-num {
+    font-family: var(--film);
+    font-size: 2rem;
+    color: var(--gold);
+    letter-spacing: .05em;
+  }
+  .s-lbl {
+    font-family: var(--mono);
+    font-size: .5rem;
+    color: var(--muted);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-top: .1rem;
+  }
+  @keyframes fadeUp  { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ── SHARED SECTION LABELS ── */
+  .sec-lbl {
+    font-family: var(--mono);
+    font-size: .58rem;
+    letter-spacing: .48em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: .9rem;
+  }
+  .sec-lbl::before { content: '// '; }
+  .sec-ttl {
+    font-family: var(--film);
+    font-size: clamp(2.4rem, 5.5vw, 5rem);
+    letter-spacing: .06em;
+    line-height: .95;
+    color: var(--white);
+  }
+  .sec-ttl em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--gold);
+  }
+
+  /* ── PROJECTS ── */
+  #projects { background: var(--black); padding: 8rem 3rem; }
+  .pr-in { max-width: 1320px; margin: 0 auto; }
+  .pr-hd { margin-bottom: 3.5rem; }
+  .pr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .pr-card {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    background: var(--surface);
+    cursor: none;
+  }
+  .pr-card.wide { grid-column: span 2; aspect-ratio: auto; min-height: 300px; }
+  .pr-bg {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    transition: transform .65s cubic-bezier(.25,.46,.45,.94), filter .4s;
+    filter: brightness(.65) saturate(.75);
+  }
+  .pr-card:hover .pr-bg { transform: scale(1.07); filter: brightness(.38) saturate(.5); }
+  .g1 { background: linear-gradient(135deg, #0f0c08 0%, #1e1810 50%, #0f0c08 100%); }
+  .g2 { background: linear-gradient(135deg, #080c10 0%, #0e1620 50%, #080c10 100%); }
+  .g3 { background: linear-gradient(135deg, #100808 0%, #200e0a 50%, #100808 100%); }
+  .pr-thumb-img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: transform .65s cubic-bezier(.25,.46,.45,.94), filter .4s;
+    filter: brightness(.7) saturate(.8);
+  }
+  .pr-card:hover .pr-thumb-img { transform: scale(1.07); filter: brightness(.38) saturate(.5); }
+  .pr-veil {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,.93) 0%, transparent 55%);
+    opacity: 0;
+    transition: opacity .4s;
+    z-index: 1;
+  }
+  .pr-card:hover .pr-veil { opacity: 1; }
+  .pr-play-ic {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(.75);
+    width: 54px; height: 54px;
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,.5);
+    opacity: 0;
+    transition: opacity .3s, transform .3s;
+    z-index: 2;
+  }
+  .pr-play-ic::after {
+    content: '';
+    width: 0; height: 0;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-left: 15px solid var(--white);
+    margin-left: 4px;
+  }
+  .pr-card:hover .pr-play-ic { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .pr-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 1.2rem 1.4rem;
+    transform: translateY(8px);
+    transition: transform .4s;
+    z-index: 3;
+  }
+  .pr-card:hover .pr-info { transform: translateY(0); }
+  .pr-type {
+    font-family: var(--mono);
+    font-size: .52rem;
+    letter-spacing: .3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: .35rem;
+    opacity: 0;
+    transition: opacity .35s .05s;
+  }
+  .pr-name {
+    font-family: var(--film);
+    font-size: 1.2rem;
+    letter-spacing: .08em;
+    color: var(--white);
+    opacity: 0;
+    transition: opacity .35s .1s;
+  }
+  .pr-desc {
+    font-size: .7rem;
+    color: #aaa;
+    margin-top: 4px;
+    font-family: var(--mono);
+    opacity: 0;
+    transition: opacity .35s .15s;
+  }
+  .pr-card:hover .pr-type,
+  .pr-card:hover .pr-name,
+  .pr-card:hover .pr-desc { opacity: 1; }
+  .pr-num {
+    position: absolute; top: 14px; left: 14px;
+    font-family: var(--mono);
+    font-size: .52rem;
+    letter-spacing: .2em;
+    color: rgba(255,255,255,.22);
+    z-index: 2;
+  }
+  .pr-lbl-ic {
+    position: absolute; top: 14px; right: 14px;
+    font-family: var(--mono);
+    font-size: .48rem;
+    letter-spacing: .15em;
+    color: rgba(201,168,76,.5);
+    z-index: 2;
+    border: 1px solid rgba(201,168,76,.2);
+    padding: .2rem .5rem;
+    text-transform: uppercase;
+  }
+  .pr-inner-label {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 0;
+  }
+  .pr-inner-label span {
+    font-family: var(--film);
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    letter-spacing: .2em;
+    color: rgba(201,168,76,.07);
+  }
+
+  /* ── EXPERTISE ── */
+  #expertise { background: var(--charcoal); padding: 8rem 3rem; }
+  .ex-in {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 6rem; align-items: start;
+  }
+  .ex-skills { margin-top: 3rem; display: flex; flex-direction: column; gap: 2rem; }
+  .sk-hd { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .55rem; }
+  .sk-nm { font-family: var(--serif); font-weight: 400; font-size: .95rem; letter-spacing: .07em; color: var(--white); }
+  .sk-pc { font-family: var(--mono); font-size: .58rem; color: var(--gold); }
+  .sk-tr { height: 1px; background: var(--border); position: relative; overflow: hidden; }
+  .sk-fl {
+    position: absolute; top: 0; left: 0;
+    height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+    transition: width 1.5s cubic-bezier(.4,0,.2,1);
+  }
+  .tl-wrap { margin-top: 1rem; }
+  .tl-lbl {
+    font-family: var(--mono);
+    font-size: .56rem;
+    letter-spacing: .4em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 1.4rem;
+  }
+  .tl-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .tl-cell { background: var(--deep); padding: 1.4rem 1.5rem; transition: background .3s; }
+  .tl-cell:hover { background: var(--surface); }
+  .tl-nm { font-family: var(--film); font-size: 1rem; letter-spacing: .08em; color: var(--white); }
+  .tl-tg { font-family: var(--mono); font-size: .5rem; color: var(--muted); letter-spacing: .12em; margin-top: .25rem; }
+  .ex-q {
+    margin-top: 2.8rem;
+    padding: 1.8rem;
+    border-left: 2px solid var(--gold);
+    background: rgba(201,168,76,.03);
+  }
+  .ex-q p {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 1.05rem;
+    color: var(--cream);
+    line-height: 1.75;
+  }
+
+  /* ── SERVICES ── */
+  #services { background: var(--black); padding: 8rem 3rem; }
+  .sv-in { max-width: 1200px; margin: 0 auto; }
+  .sv-hd { text-align: center; margin-bottom: 4rem; }
+  .sv-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .sv-card {
+    background: var(--charcoal);
+    padding: 2.4rem 2rem;
+    position: relative; overflow: hidden;
+    transition: background .4s;
+  }
+  .sv-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,.04), transparent);
+    opacity: 0; transition: opacity .4s;
+  }
+  .sv-card:hover { background: var(--deep); }
+  .sv-card:hover::before { opacity: 1; }
+  .sv-num {
+    font-family: var(--film);
+    font-size: 3.2rem;
+    color: var(--border);
+    line-height: 1; margin-bottom: .9rem;
+    transition: color .4s;
+  }
+  .sv-card:hover .sv-num { color: rgba(201,168,76,.11); }
+  .sv-ttl { font-family: var(--film); font-size: 1.05rem; letter-spacing: .1em; color: var(--white); margin-bottom: .7rem; }
+  .sv-desc { font-family: var(--serif); font-weight: 300; font-size: .88rem; color: var(--muted); line-height: 1.72; }
+  .sv-tag {
+    display: inline-block; margin-top: 1.2rem;
+    font-family: var(--mono);
+    font-size: .52rem;
+    letter-spacing: .2em;
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+    padding: .28rem .65rem;
+  }
+
+  /* ── TESTIMONIALS ── */
+  #testimonials { background: var(--charcoal); padding: 8rem 3rem; }
+  .tm-in { max-width: 1000px; margin: 0 auto; }
+  .tm-hd { text-align: center; margin-bottom: 4rem; }
+  .tm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.8rem; }
+  .tm-card {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    position: relative; overflow: hidden;
+    transition: border-color .4s, transform .4s;
+  }
+  .tm-card:hover { border-color: var(--gold-dim); transform: translateY(-5px); }
+  .tm-card::before {
+    content: '\201C';
+    font-family: var(--serif);
+    font-size: 5rem;
+    color: var(--gold-dim);
+    opacity: .4;
+    position: absolute; top: -.6rem; left: 1.2rem;
+    line-height: 1;
+  }
+  .stars { display: flex; gap: 3px; margin-bottom: .5rem; }
+  .star { color: var(--gold); font-size: .65rem; }
+  .tm-project {
+    font-family: var(--mono);
+    font-size: .5rem;
+    letter-spacing: .25em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    border-left: 2px solid var(--gold-dim);
+    padding-left: .5rem;
+    margin-bottom: .9rem;
+  }
+  .tm-txt {
+    font-family: var(--serif);
+    font-style: italic; font-weight: 300;
+    font-size: .9rem;
+    color: var(--cream);
+    line-height: 1.78;
+    margin-bottom: 1.4rem;
+  }
+  .tm-cl { display: flex; align-items: center; gap: .9rem; }
+  .tm-av {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--film); font-size: .9rem; color: var(--gold);
+    flex-shrink: 0;
+  }
+  .tm-nm { font-family: var(--mono); font-size: .6rem; color: var(--white); letter-spacing: .1em; }
+  .tm-rl { font-family: var(--mono); font-size: .52rem; color: var(--muted); letter-spacing: .08em; margin-top: .12rem; }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--black); padding: 9rem 3rem; position: relative; overflow: hidden; }
+  #contact::before {
+    content: '';
+    position: absolute; inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 60%, rgba(201,168,76,.05) 0%, transparent 65%);
+  }
+  .ct-in { max-width: 820px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
+  .ct-big {
+    font-family: var(--film);
+    font-size: clamp(3.5rem, 9vw, 8.5rem);
+    letter-spacing: .05em; line-height: .88;
+    color: var(--white);
+    margin-bottom: 1.4rem;
+  }
+  .ct-big span { color: var(--gold); }
+  .ct-sub {
+    font-family: var(--serif);
+    font-style: italic; font-weight: 300;
+    font-size: 1.08rem;
+    color: var(--muted);
+    margin-bottom: 3rem;
+  }
+  .ct-em {
+    display: inline-block;
+    font-family: var(--film);
+    font-size: clamp(1.1rem, 2.8vw, 1.9rem);
+    letter-spacing: .1em;
+    color: var(--cream);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold-dim);
+    padding-bottom: .25rem;
+    transition: color .3s, border-color .3s;
+  }
+  .ct-em:hover { color: var(--gold); border-color: var(--gold); }
+  .ct-ph {
+    display: block; margin-top: 1rem;
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .2em;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color .3s;
+  }
+  .ct-ph:hover { color: var(--gold); }
+  .ct-avail {
+    margin-top: 3rem;
+    display: inline-flex; align-items: center; gap: .8rem;
+    font-family: var(--mono);
+    font-size: .56rem;
+    letter-spacing: .25em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .avail-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #4caf50;
+    box-shadow: 0 0 8px #4caf50;
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+  @keyframes dotPulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+  .ct-socs { display: flex; justify-content: center; gap: 2.2rem; margin-top: 2.8rem; }
+  .ct-sc {
+    font-family: var(--mono);
+    font-size: .58rem;
+    letter-spacing: .3em;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color .3s;
+    position: relative;
+  }
+  .ct-sc::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width .3s;
+  }
+  .ct-sc:hover { color: var(--gold); }
+  .ct-sc:hover::after { width: 100%; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--charcoal);
+    border-top: 1px solid var(--border);
+    padding: 1.8rem 3rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .ft-lo { font-family: var(--film); font-size: 1.15rem; letter-spacing: .15em; color: var(--muted); }
+  .ft-lo span { color: var(--gold-dim); }
+  .ft-cp { font-family: var(--mono); font-size: .5rem; letter-spacing: .2em; color: var(--border); text-transform: uppercase; }
+
+  /* ── VIDEO MODAL ── */
+  .modal-w {
+    position: fixed; inset: 0;
+    z-index: 9990;
+    background: rgba(0,0,0,.96);
+    backdrop-filter: blur(14px);
+    display: none; align-items: center; justify-content: center;
+  }
+  .modal-w.on { display: flex; }
+  .modal-b {
+    width: 92%; max-width: 950px;
+    position: relative;
+    animation: modalZoom .4s cubic-bezier(.22,.61,.36,1);
+  }
+  @keyframes modalZoom { from { transform: scale(.88); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-close {
+    position: absolute; top: -2.8rem; right: 0;
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .2em;
+    color: var(--muted);
+    background: none; border: none;
+    cursor: none;
+    text-transform: uppercase;
+    transition: color .3s;
+  }
+  .modal-close:hover { color: var(--gold); }
+  .modal-if {
+    width: 100%; aspect-ratio: 16/9;
+    border: 1px solid var(--border);
+    background: #000;
+    display: block;
+  }
+  .mc { position: absolute; width: 18px; height: 18px; }
+  .mc.tl { top: -1px; left: -1px; border-top: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+  .mc.tr { top: -1px; right: -1px; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+  .mc.bl { bottom: -1px; left: -1px; border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold); }
+  .mc.br { bottom: -1px; right: -1px; border-bottom: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+
+  /* ── SCROLL REVEAL ── */
+  .rv { opacity: 0; transform: translateY(28px); transition: opacity .85s ease, transform .85s ease; }
+  .rv.in { opacity: 1; transform: translateY(0); }
+  .rv.d1 { transition-delay: .12s; }
+  .rv.d2 { transition-delay: .22s; }
+  .rv.d3 { transition-delay: .32s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .pr-grid { grid-template-columns: repeat(2, 1fr); }
+    .pr-card.wide { grid-column: span 1; }
+    .sv-grid { grid-template-columns: repeat(2, 1fr); }
+    .ex-in { grid-template-columns: 1fr; gap: 4rem; }
+    .tm-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+    .h-stats { display: none; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 1.1rem 1.4rem; }
+    .nav-links, .nav-cta { display: none; }
+    .hbg { display: flex; }
+    #projects, #expertise, #services, #testimonials, #contact { padding: 5rem 1.4rem; }
+    .pr-grid { grid-template-columns: 1fr; }
+    .sv-grid { grid-template-columns: 1fr; }
+    .h-bar-t, .h-bar-b { height: 30px; }
+    footer { flex-direction: column; gap: .8rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor elements -->
+<div id="cur" aria-hidden="true"></div>
+<div id="crng" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ═══ LOADER ═══ -->
+<div id="loader" role="status" aria-label="Loading">
+  <div class="l-perf-row" aria-hidden="true">
+    <div class="l-perf"></div><div class="l-perf"></div><div class="l-perf"></div>
+    <div class="l-perf"></div><div class="l-perf"></div><div class="l-perf"></div>
+    <div class="l-perf"></div><div class="l-perf"></div>
+  </div>
+  <div class="l-frame">
+    <div class="l-name">MANOJ KUMAR S</div>
+    <div class="l-sub">Video Editor &amp; Storyteller</div>
+  </div>
+  <div class="l-bar-w"><div class="l-bar"></div></div>
+  <div class="l-ct" id="lct">000</div>
+</div>
+
+<!-- ═══ VIDEO MODAL ═══ -->
+<div class="modal-w" id="modal" role="dialog" aria-modal="true" aria-label="Video Player">
+  <div class="modal-b">
+    <div class="mc tl" aria-hidden="true"></div>
+    <div class="mc tr" aria-hidden="true"></div>
+    <div class="mc bl" aria-hidden="true"></div>
+    <div class="mc br" aria-hidden="true"></div>
+    <button class="modal-close" onclick="closeModal()" aria-label="Close video">✕ &nbsp;Close</button>
+    <iframe
+      class="modal-if"
+      id="mif"
+      src=""
+      frameborder="0"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen
+      title="Project Video"
+    ></iframe>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav" role="navigation" aria-label="Main navigation">
+  <a href="#" class="nav-logo">Kumar<span>_</span>EDITZ</a>
+  <ul class="nav-links">
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#expertise">Expertise</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="hbg" id="hbg" aria-label="Menu" role="button" tabindex="0">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero" aria-label="Hero">
+  <div class="h-bg" aria-hidden="true"></div>
+  <div class="h-glow" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="h-bar-t" aria-hidden="true"></div>
+  <div class="h-bar-b" aria-hidden="true"></div>
+
+  <div class="h-cnt">
+    <div class="h-eye">Chennai, Tamil Nadu &nbsp;·&nbsp; Short-form Specialist</div>
+    <h1 class="h-nm">MANOJ<br><span class="g">KUMAR</span></h1>
+    <p class="h-ttl">Video Editor &nbsp;|&nbsp; Storyteller</p>
+    <div class="h-rule" aria-hidden="true"></div>
+    <p class="h-tag">Turning raw footage into powerful short-form stories that captivate and retain audiences</p>
+    <div class="h-btns">
+      <a href="#projects" class="btn-o">View Projects</a>
+    </div>
+  </div>
+
+  <div class="h-stats" aria-label="Statistics">
+    <div><div class="s-num">50+</div><div class="s-lbl">Edits Delivered</div></div>
+    <div><div class="s-num">4+</div><div class="s-lbl">Tools Mastered</div></div>
+    <div><div class="s-num">2+</div><div class="s-lbl">Years Editing</div></div>
+  </div>
+
+  <div class="h-scroll" aria-hidden="true">
+    <span class="h-stxt">Scroll</span>
+    <div class="h-sline"></div>
+  </div>
+</section>
+
+<!-- ═══ PROJECTS ═══ -->
+<section id="projects" aria-label="Selected Projects">
+  <div class="pr-in">
+    <div class="pr-hd rv">
+      <div class="sec-lbl">Selected Work</div>
+      <h2 class="sec-ttl">THE <em>Projects</em></h2>
+    </div>
+
+    <div class="pr-grid">
+
+      <!-- PROJECT 1 — Wide feature card -->
+      <div
+        class="pr-card wide rv"
+        role="button"
+        tabindex="0"
+        aria-label="Watch Detroit: Become Human — Worst Decisions Breakdown"
+        onclick="window.open('https://youtube.com/shorts/V76SPFFRJi8','_blank')"
+        onkeypress="if(event.key==='Enter')window.open('https://youtube.com/shorts/V76SPFFRJi8','_blank')"
+      >
+        <div class="pr-bg g1">
+          <img src="./Detroit_TN.jpeg" class="pr-thumb-img" alt="Detroit: Become Human game edit thumbnail">
+          <div class="pr-inner-label" aria-hidden="true"><span>DETROIT EDIT</span></div>
+        </div>
+        <div class="pr-veil" aria-hidden="true"></div>
+        <div class="pr-play-ic" aria-hidden="true"></div>
+        <div class="pr-num" aria-hidden="true">01</div>
+        <div class="pr-lbl-ic" aria-hidden="true">▶ Play</div>
+        <div class="pr-info">
+          <div class="pr-type">Cinematic · Game Edit</div>
+          <div class="pr-name">Worst Decisions Breakdown</div>
+          <div class="pr-desc">5 devastating choices that reshape the story and emotional impact of Detroit: Become Human.</div>
+        </div>
+      </div>
+
+      <!-- PROJECT 2 -->
+      <div
+        class="pr-card rv"
+        role="button"
+        tabindex="0"
+        aria-label="Watch A Wife From The Future"
+        onclick="window.open('https://www.youtube.com/watch?v=-rgzkZmcyF4','_blank')"
+        onkeypress="if(event.key==='Enter')window.open('https://www.youtube.com/watch?v=-rgzkZmcyF4','_blank')"
+      >
+        <div class="pr-bg g2">
+          <img src="sore_TN.jpeg" class="pr-thumb-img" alt="Sore film edit thumbnail" loading="lazy">
+          <div class="pr-inner-label" aria-hidden="true"><span>SORE EDIT</span></div>
+        </div>
+        <div class="pr-veil" aria-hidden="true"></div>
+        <div class="pr-play-ic" aria-hidden="true"></div>
+        <div class="pr-num" aria-hidden="true">02</div>
+        <div class="pr-lbl-ic" aria-hidden="true">▶ Play</div>
+        <div class="pr-info">
+          <div class="pr-type">Cinematic · Film Edit</div>
+          <div class="pr-name">A Wife From The Future</div>
+          <div class="pr-desc">A time-loop love story where a wife travels through timelines to save her husband from a tragic fate.</div>
+        </div>
+      </div>
+
+      <!-- PROJECT 3 -->
+      <div
+        class="pr-card rv"
+        role="button"
+        tabindex="0"
+        aria-label="Watch Dark Knight — Chaos vs Order"
+        onclick="openVideo('https://www.youtube.com/embed/a3Eahgc4OFs')"
+        onkeypress="if(event.key==='Enter')openVideo('https://www.youtube.com/embed/a3Eahgc4OFs')"
+      >
+        <div class="pr-bg g3">
+          <img src="Dark_TN.jpeg" class="pr-thumb-img" alt="Dark Knight cinematic edit thumbnail" loading="lazy">
+          <div class="pr-inner-label" aria-hidden="true"><span>DARK KNIGHT</span></div>
+        </div>
+        <div class="pr-veil" aria-hidden="true"></div>
+        <div class="pr-play-ic" aria-hidden="true"></div>
+        <div class="pr-num" aria-hidden="true">03</div>
+        <div class="pr-lbl-ic" aria-hidden="true">▶ Play</div>
+        <div class="pr-info">
+          <div class="pr-type">Cinematic · Movie Edit</div>
+          <div class="pr-name">Chaos vs Order</div>
+          <div class="pr-desc">A cinematic edit exploring the psychological battle between Batman and the Joker.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EXPERTISE ═══ -->
+<section id="expertise" aria-label="Craft and Skills">
+  <div class="ex-in">
+    <div>
+      <div class="rv">
+        <div class="sec-lbl">Craft &amp; Skills</div>
+        <h2 class="sec-ttl">EDITING<br><em>Expertise</em></h2>
+      </div>
+      <div class="ex-skills">
+        <div class="rv d1">
+          <div class="sk-hd">
+            <span class="sk-nm">Short-form Pacing &amp; Rhythm</span>
+            <span class="sk-pc">95%</span>
+          </div>
+          <div class="sk-tr"><div class="sk-fl" data-w="95" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div></div>
+        </div>
+        <div class="rv d1">
+          <div class="sk-hd">
+            <span class="sk-nm">Transitions &amp; Text Animations</span>
+            <span class="sk-pc">90%</span>
+          </div>
+          <div class="sk-tr"><div class="sk-fl" data-w="90" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div></div>
+        </div>
+        <div class="rv d2">
+          <div class="sk-hd">
+            <span class="sk-nm">Audio Sync &amp; Music Editing</span>
+            <span class="sk-pc">88%</span>
+          </div>
+          <div class="sk-tr"><div class="sk-fl" data-w="88" role="progressbar" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100"></div></div>
+        </div>
+        <div class="rv d2">
+          <div class="sk-hd">
+            <span class="sk-nm">Storytelling &amp; Audience Retention</span>
+            <span class="sk-pc">93%</span>
+          </div>
+          <div class="sk-tr"><div class="sk-fl" data-w="93" role="progressbar" aria-valuenow="93" aria-valuemin="0" aria-valuemax="100"></div></div>
+        </div>
+        <div class="rv d3">
+          <div class="sk-hd">
+            <span class="sk-nm">Creative Effects &amp; Subtitles</span>
+            <span class="sk-pc">87%</span>
+          </div>
+          <div class="sk-tr"><div class="sk-fl" data-w="87" role="progressbar" aria-valuenow="87" aria-valuemin="0" aria-valuemax="100"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rv d2">
+      <div class="tl-wrap">
+        <div class="tl-lbl">// Software Arsenal</div>
+        <div class="tl-grid">
+          <div class="tl-cell"><div class="tl-nm">CAPCUT</div><div class="tl-tg">Primary Mobile Editor</div></div>
+          <div class="tl-cell"><div class="tl-nm">KINEMASTER</div><div class="tl-tg">Multi-layer Mobile Editing</div></div>
+          <div class="tl-cell"><div class="tl-nm">PREMIERE PRO</div><div class="tl-tg">Professional NLE (Basic)</div></div>
+          <div class="tl-cell"><div class="tl-nm">AFTER EFFECTS</div><div class="tl-tg">Motion &amp; VFX (Basic)</div></div>
+        </div>
+      </div>
+      <blockquote class="ex-q">
+        <p>"Every cut is a heartbeat. Every transition is a breath. I don't just edit footage — I craft the emotion between the frames that makes audiences stay till the very end."</p>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SERVICES ═══ -->
+<section id="services" aria-label="Services">
+  <div class="sv-in">
+    <div class="sv-hd rv">
+      <div class="sec-lbl">What I Offer</div>
+      <h2 class="sec-ttl">THE <em>Services</em></h2>
+    </div>
+    <div class="sv-grid">
+      <div class="sv-card rv">
+        <div class="sv-num" aria-hidden="true">01</div>
+        <h3 class="sv-ttl">YouTube Shorts Editing</h3>
+        <p class="sv-desc">Fast-paced, retention-optimized short-form edits built to hook viewers in the first 2 seconds. Subtitles, effects, music sync and clean pacing designed for the algorithm.</p>
+        <span class="sv-tag">Short-form</span>
+      </div>
+      <div class="sv-card rv d1">
+        <div class="sv-num" aria-hidden="true">02</div>
+        <h3 class="sv-ttl">Instagram Reels</h3>
+        <p class="sv-desc">Scroll-stopping Reels with trending transitions, beat-synced cuts, and storytelling hooks that keep audiences watching till the final frame.</p>
+        <span class="sv-tag">Reels</span>
+      </div>
+      <div class="sv-card rv d2">
+        <div class="sv-num" aria-hidden="true">03</div>
+        <h3 class="sv-ttl">Movie / Fan Edits</h3>
+        <p class="sv-desc">Cinematic tribute and fan edit videos with dramatic pacing, emotional music sync, and impactful visual sequencing that resonates with film communities.</p>
+        <span class="sv-tag">Cinematic</span>
+      </div>
+      <div class="sv-card rv">
+        <div class="sv-num" aria-hidden="true">04</div>
+        <h3 class="sv-ttl">Storytelling Clips</h3>
+        <p class="sv-desc">Infotainment and narrative-driven content that educates, entertains, and retains — with well-timed text overlays and smooth audio transitions.</p>
+        <span class="sv-tag">Infotainment</span>
+      </div>
+      <div class="sv-card rv d1">
+        <div class="sv-num" aria-hidden="true">05</div>
+        <h3 class="sv-ttl">Transitions &amp; Effects</h3>
+        <p class="sv-desc">Creative transitions, text animations, and visual effects that elevate your content from ordinary to visually striking with zero jarring cuts.</p>
+        <span class="sv-tag">Effects</span>
+      </div>
+      <div class="sv-card rv d2">
+        <div class="sv-num" aria-hidden="true">06</div>
+        <h3 class="sv-ttl">Audio Sync &amp; Sound</h3>
+        <p class="sv-desc">Precise background music editing and audio sync that makes every cut feel intentional and every beat land with maximum emotional impact.</p>
+        <span class="sv-tag">Sound Design</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ═══ -->
+<section id="testimonials" aria-label="Client Testimonials">
+  <div class="tm-in">
+    <div class="tm-hd rv">
+      <div class="sec-lbl">Client Words</div>
+      <h2 class="sec-ttl">THE <em>Reviews</em></h2>
+    </div>
+    <div class="tm-grid">
+      <div class="tm-card rv">
+        <div class="stars" aria-label="5 out of 5 stars">
+          <span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span>
+          <span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span>
+          <span class="star" aria-hidden="true">★</span>
+        </div>
+        <div class="tm-project">Dark Knight Movie Edit</div>
+        <p class="tm-txt">The video clarity was really nice, and the clips chosen for this edit were good and matched well with the song. You can also try editing with trending songs, which may help the video reach more people and become more popular.</p>
+        <div class="tm-cl">
+          <div class="tm-av" aria-hidden="true">K</div>
+          <div>
+            <div class="tm-nm">KISHAN SREE</div>
+            <div class="tm-rl">Film Enthusiast · Viewer</div>
+          </div>
+        </div>
+      </div>
+      <div class="tm-card rv d1">
+        <div class="stars" aria-label="5 out of 5 stars">
+          <span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span>
+          <span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span>
+          <span class="star" aria-hidden="true">★</span>
+        </div>
+        <div class="tm-project">With Love Movie Edit</div>
+        <p class="tm-txt">The edit feels really heartfelt and the emotions come through beautifully, especially with the music choice. Maybe you can smooth a few transitions, but overall it's a lovely and meaningful edit.</p>
+        <div class="tm-cl">
+          <div class="tm-av" aria-hidden="true">A</div>
+          <div>
+            <div class="tm-nm">ABHINESHWAR REDDY</div>
+            <div class="tm-rl">Content Viewer · Film Fan</div>
+          </div>
+        </div>
+      </div>
+      <div class="tm-card rv d2">
+        <div class="stars" aria-label="5 out of 5 stars">
+          <span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span>
+          <span class="star" aria-hidden="true">★</span><span class="star" aria-hidden="true">★</span>
+          <span class="star" aria-hidden="true">★</span>
+        </div>
+        <div class="tm-project">Virat Kohli Edit</div>
+        <p class="tm-txt">The edit was so good — the background music and scenes had great sync. You've captured all the best moments of Kohli and the fans perfectly.</p>
+        <div class="tm-cl">
+          <div class="tm-av" aria-hidden="true">H</div>
+          <div>
+            <div class="tm-nm">HARI VEERA PRASAD</div>
+            <div class="tm-rl">Cricket Fan · Content Viewer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact" aria-label="Contact">
+  <div class="ct-in">
+    <div class="rv">
+      <div class="sec-lbl">Get In Touch</div>
+      <h2 class="ct-big">LET'S<br><span>CREATE</span></h2>
+      <p class="ct-sub">Have a project in mind? Let's make something unforgettable together.</p>
+    </div>
+    <p><span>kumarmanoj04927@gmail.com</span></p>
+    <a href="tel:+916380682087" class="ct-ph rv">+91 63806 82087</a>
+    <div class="ct-avail rv">
+      <span class="avail-dot" aria-hidden="true"></span>
+      Available for freelance projects
+    </div>
+    <div class="ct-socs rv">
+      <!-- Replace # with your actual social profile URLs -->
+      <a href="https://www.instagram.com/m_kumar1919?utm_source=qr&igsh=YXd5ZnJ3Mmg2c3Rx" class="ct-sc" aria-label="Instagram profile">Instagram</a>
+      <a href="https://www.youtube.com/@automind-k5r" class="ct-sc" aria-label="YouTube channel">YouTube</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="ft-lo">Kumar<span>_</span>EDITZ</div>
+  <div class="ft-cp">© 2025 Manoj Kumar S — Chennai, Tamil Nadu</div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  /* ── LOADER ── */
+  (function () {
+    var n = 0;
+    var lct = document.getElementById('lct');
+    document.body.style.overflow = 'hidden';
+
+    var lt = setInterval(function () {
+      n += Math.floor(Math.random() * 10) + 4;
+      if (n >= 100) { n = 100; clearInterval(lt); }
+      lct.textContent = String(n).padStart(3, '0');
+    }, 55);
+
+    setTimeout(function () {
+      document.getElementById('loader').classList.add('gone');
+      document.body.style.overflow = 'auto';
+    }, 2500);
+  })();
+
+  /* ── CUSTOM CURSOR ── */
+  var cur  = document.getElementById('cur');
+  var crng = document.getElementById('crng');
+  var mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', function (e) {
+    mx = e.clientX; my = e.clientY;
+    cur.style.left = mx + 'px';
+    cur.style.top  = my + 'px';
+  });
+
+  (function loop() {
+    rx += (mx - rx) * 0.11;
+    ry += (my - ry) * 0.11;
+    crng.style.left = rx + 'px';
+    crng.style.top  = ry + 'px';
+    requestAnimationFrame(loop);
+  })();
+
+  /* ── NAV SCROLL STYLE ── */
+  window.addEventListener('scroll', function () {
+    document.getElementById('nav').classList.toggle('ink', window.scrollY > 50);
+  });
+
+  /* ── SCROLL REVEAL ── */
+  var revealObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) e.target.classList.add('in');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.rv').forEach(function (el) {
+    revealObs.observe(el);
+  });
+
+  /* ── SKILL BARS ── */
+  var barObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) e.target.style.width = e.target.dataset.w + '%';
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.sk-fl').forEach(function (b) {
+    barObs.observe(b);
+  });
+
+  /* ── VIDEO MODAL ── */
+  var modal = document.getElementById('modal');
+  var mif   = document.getElementById('mif');
+
+  /*
+   * SHOWREEL: Replace YOUR_SHOWREEL_ID with your Google Drive File ID.
+   * To find your File ID: open Drive → right-click video → "Get link"
+   * URL looks like: https://drive.google.com/file/d/FILE_ID_HERE/view
+   * Use the /preview endpoint below.
+   */
+  var REEL = 'https://drive.google.com/file/d/YOUR_SHOWREEL_ID/preview';
+
+  function openVideo(url) {
+    mif.src = url;
+    modal.classList.add('on');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openReel() {
+    openVideo(REEL);
+  }
+
+  function closeModal() {
+    modal.classList.remove('on');
+    mif.src = '';
+    document.body.style.overflow = 'auto';
+  }
+
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  /* ── HERO PARALLAX ── */
+  window.addEventListener('scroll', function () {
+    var hc = document.querySelector('.h-cnt');
+    if (hc && window.scrollY < window.innerHeight) {
+      hc.style.transform = 'translateY(' + (window.scrollY * 0.22) + 'px)';
+      hc.style.opacity   = 1 - window.scrollY / (window.innerHeight * 0.72);
+    }
+  });
+</script>
+</body>
+</html>
